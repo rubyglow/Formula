@@ -15,5 +15,4 @@ with the formula sin(2*pi*x/5)*5, as you can see here:
 Some functions take 2 arguments. For example you could use the max function, to get either the input x or the input y, depending on which
 voltage is higher: max(x, y).
 
-The red LED is blinking if there is a parsing error. If it is on, the formula is running. To compile a formula, use the
-context menu and the Initialize function, or the CTRL-I keyboard shortcut.
+The red LED is blinking if there is a parsing error. If it is on, the formula is running.

@@ -2,6 +2,18 @@
 #include "dsp/digital.hpp"
 #include "formula/Formula.h"
 
+struct FrankBussFormulaModule;
+
+class MyTextField : public LedDisplayTextField {
+public:
+	MyTextField() : LedDisplayTextField() {}
+	void setModule(FrankBussFormulaModule* _module) { module = _module; }
+	virtual void onTextChange() override;
+	
+private:
+	FrankBussFormulaModule* module;
+};
+
 struct FrankBussFormulaModule : Module {
 	enum ParamIds {
 		X_PARAM,
@@ -25,7 +37,7 @@ struct FrankBussFormulaModule : Module {
 	};
 	
 	Formula formula;
-	TextField* textField;
+	MyTextField* textField;
 	bool compiled = false;
 	float phase = 0.0;
 	float blinkPhase = 0.0;
@@ -57,6 +69,9 @@ struct FrankBussFormulaModule : Module {
 
 };
 
+void MyTextField::onTextChange() {
+	module->onCreate();
+}
 
 void FrankBussFormulaModule::step() {
     float deltaTime = engineGetSampleTime();
@@ -103,7 +118,7 @@ void FrankBussFormulaModule::step() {
 
 
 struct FrankBussFormulaWidget : ModuleWidget {
-	TextField *textField;	
+	MyTextField *textField;	
 	FrankBussFormulaWidget(FrankBussFormulaModule *module) : ModuleWidget(module) {
 
 		setPanel(SVG::load(assetPlugin(plugin, "res/MyModule.svg")));
@@ -119,7 +134,8 @@ struct FrankBussFormulaWidget : ModuleWidget {
 		addOutput(Port::create<PJ301MPort>(Vec(215, 260), Port::OUTPUT, module, FrankBussFormulaModule::FORMULA_OUTPUT));
 
 		addChild(ModuleLightWidget::create<MediumLight<RedLight>>(Vec(125, 100), module, FrankBussFormulaModule::BLINK_LIGHT));
-		textField = Widget::create<LedDisplayTextField>(mm2px(Vec(3, 42)));
+		textField = Widget::create<MyTextField>(mm2px(Vec(3, 42)));
+		textField->setModule(module);
 		textField->box.size = mm2px(Vec(85, 40));
 		textField->multiline = true;
 		
