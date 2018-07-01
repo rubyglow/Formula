@@ -42,10 +42,10 @@ struct FrankBussFormulaModule : Module {
 		if (textField->text.size() > 0) {
 			try {
 				formula.setExpression(textField->text);
+				formula.setVariable("pi", M_PI);
 				compiled = true;
-			} catch (exception *exc) {
-				// printf("Exception: %s\n", exc->what());
-				delete exc;
+			} catch (exception&) {
+				// printf("Exception: %s\n", exc.what());
 			}
 		}
 	}
@@ -68,15 +68,21 @@ void FrankBussFormulaModule::step() {
     
     // calculate formula
 	float val = 0;
-    try {
-        formula.setVariable("x", x);
-        formula.setVariable("y", y);
-        formula.setVariable("z", z);
-        val = clamp(formula.eval(), -5.0f, 5.0f);
-    } catch (exception *exc) {
-        // printf("Exception: %s\n", exc->what());
-        delete exc;
-    }
+	if (compiled) {
+		try {
+			formula.setVariable("x", x);
+			formula.setVariable("y", y);
+			formula.setVariable("z", z);
+			val = formula.eval();
+			if (!isfinite(val) || isnan(val)) val = 0.0f;
+			val = clamp(val, -5.0f, 5.0f);
+		} catch (MathError&) {
+			// ignore math errors, e.g. division by zero
+		} catch (exception&) {
+			// for all other exceptions, set compiled to false, e.g. VariableNotFound
+			compiled = false;
+		}
+	}
 
     // set output
 	outputs[FORMULA_OUTPUT].value = val;
@@ -85,7 +91,7 @@ void FrankBussFormulaModule::step() {
 	blinkPhase += deltaTime;
 	if (blinkPhase >= 1.0f)
 		blinkPhase -= 1.0f;
-	if(compiled)
+	if (compiled)
 	{
 		lights[BLINK_LIGHT].value = 1.0f;
 	}

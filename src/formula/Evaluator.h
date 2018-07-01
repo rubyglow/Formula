@@ -46,7 +46,7 @@ public:
 	NumberAction(float value) : m_value(value) {}
 	NumberAction(string value);
 
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack)  throw(StackUnderflow, MathError) override;
 
 private:
 	float m_value;
@@ -56,93 +56,93 @@ private:
 class MulAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 
 class DivAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 
 class AddAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class LessAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class GreaterAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class LessEqualAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class GreaterEqualAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class EqualAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class NotEqualAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class AndAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class OrAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class NotAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class SubAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class NegAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class PowerAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) override;
+	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
 };
 
 class Evaluator

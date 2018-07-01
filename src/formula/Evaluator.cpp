@@ -31,7 +31,7 @@ NumberAction::NumberAction(string value)
 	m_value = atof(value.c_str());
 }
 
-void NumberAction::run(NumberStack& numberStack)
+void NumberAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	numberStack.push(m_value);
 	checkTopStackElement(numberStack);
@@ -39,7 +39,7 @@ void NumberAction::run(NumberStack& numberStack)
 
 
 
-void MulAction::run(NumberStack& numberStack)
+void MulAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -49,17 +49,20 @@ void MulAction::run(NumberStack& numberStack)
 }
 
 
-void DivAction::run(NumberStack& numberStack)
+void DivAction::run(NumberStack& numberStack)  throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
 	float op1 = numberStack.popWithReturn();
+	if (op2 == 0.0f) {
+		throw MathError();
+	}
 	numberStack.push(op1 / op2);
 	checkTopStackElement(numberStack);
 }
 
 
-void AddAction::run(NumberStack& numberStack)
+void AddAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -68,7 +71,7 @@ void AddAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void LessAction::run(NumberStack& numberStack)
+void LessAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -77,7 +80,7 @@ void LessAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void GreaterAction::run(NumberStack& numberStack)
+void GreaterAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -86,7 +89,7 @@ void GreaterAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void LessEqualAction::run(NumberStack& numberStack)
+void LessEqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -95,7 +98,7 @@ void LessEqualAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void GreaterEqualAction::run(NumberStack& numberStack)
+void GreaterEqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -104,7 +107,7 @@ void GreaterEqualAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void EqualAction::run(NumberStack& numberStack)
+void EqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -113,7 +116,7 @@ void EqualAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void NotEqualAction::run(NumberStack& numberStack)
+void NotEqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -122,7 +125,7 @@ void NotEqualAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void AndAction::run(NumberStack& numberStack)
+void AndAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -131,7 +134,7 @@ void AndAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void OrAction::run(NumberStack& numberStack)
+void OrAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -140,14 +143,14 @@ void OrAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void NotAction::run(NumberStack& numberStack)
+void NotAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 1) throw StackUnderflow();
 	numberStack.push(!numberStack.popWithReturn());
 	checkTopStackElement(numberStack);
 }
 
-void SubAction::run(NumberStack& numberStack)
+void SubAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
@@ -156,14 +159,14 @@ void SubAction::run(NumberStack& numberStack)
 	checkTopStackElement(numberStack);
 }
 
-void NegAction::run(NumberStack& numberStack)
+void NegAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 1) throw StackUnderflow();
 	numberStack.push(-numberStack.popWithReturn());
 	checkTopStackElement(numberStack);
 }
 
-void PowerAction::run(NumberStack& numberStack)
+void PowerAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 {
 	if (numberStack.size() < 2) throw StackUnderflow();
 	float op2 = numberStack.popWithReturn();
