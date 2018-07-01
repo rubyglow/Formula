@@ -1,103 +1,55 @@
 #include "Template.hpp"
-//#include "Fundamental.hpp"
 #include "dsp/digital.hpp"
-#include "duktape.h"
+#include "formula/Formula.h"
 
-struct BokontepByteBeatModule : Module {
+struct FrankBussFormulaModule : Module {
 	enum ParamIds {
-		
-		TRIG_PARAM,
-		TRIG_PARAM_BUTTON,
 		X_PARAM,
 		Y_PARAM,
+		Z_PARAM,
 		NUM_PARAMS
 	};
 	enum InputIds {
-		
-		TRIG_INPUT,
 		X_INPUT,
 		Y_INPUT,
+		Z_INPUT,
 		NUM_INPUTS
 	};
 	enum OutputIds {
-		BYTEBEAT_OUTPUT,
+		FORMULA_OUTPUT,
 		NUM_OUTPUTS
 	};
 	enum LightIds {
 		BLINK_LIGHT,
-		TRIGGER_LIGHT,
 		NUM_LIGHTS
 	};
 	
-	
-	char javascriptBuffer[512];
-	const char* header = "function f(t,X,Y)	{ return (";
-	const char* footer = "); } ";
-	float accumulator = 0.0f;
-	float timestep = 1.0/8000.0f;
+	Formula formula;
 	TextField* textField;
-	bool running = false;
 	bool compiled = false;
-	SchmittTrigger trigger;
 	float phase = 0.0;
 	float blinkPhase = 0.0;
-	int t = 0;
-	duk_context *ctx = NULL;
-	BokontepByteBeatModule() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {
-		
+
+    FrankBussFormulaModule() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {
 	}
+
 	void step() override;
 
-	// For more advanced Module features, read Rack's engine.hpp header file
-	// - toJson, fromJson: serialization of internal data
-	// - onSampleRateChange: event triggered by a change of sample rate
-	// - onReset, onRandomize, onCreate, onDelete: implements special behavior when user clicks these from the context menu
 	void onCreate () override
 	{
-		if(ctx)
-		{
-			duk_destroy_heap(ctx);
-			ctx = duk_create_heap_default();
-		}
-		else
-		{
-			ctx = duk_create_heap_default();
-		}
-		//textField->text = "t = t+1;";
-		running = false;
-		if(strlen(textField->text.c_str())<512)
-		{
-			sprintf(javascriptBuffer,"%s%s%s",header,textField->text.c_str(),footer);
-			if (duk_pcompile_string(ctx, DUK_COMPILE_FUNCTION,javascriptBuffer)==0)
-			{
+		// textField->text = "x + y + z";
+		compiled = false;
+		if (textField->text.size() > 0) {
+			try {
+				formula.setExpression(textField->text);
 				compiled = true;
-			}
-			else
-			{
-				compiled = false;
-				running = false;
+			} catch (exception *exc) {
+				// printf("Exception: %s\n", exc->what());
+				delete exc;
 			}
 		}
-		else
-		{
-			compiled = false;
-			running = false;
-		}
-		
-		
-			
 	}
-	void onDelete() override
-	{
-		if(ctx)
-		{
-			duk_destroy_heap(ctx);
-		}
-		if(!ctx)
-		{
-			ctx = NULL;
-		}
-	}
+
 	void onReset () override
 	{
 		onCreate();
@@ -106,51 +58,30 @@ struct BokontepByteBeatModule : Module {
 };
 
 
-void BokontepByteBeatModule::step() {
-	// Implement a bytebeat oscillator
-	float deltaTime = engineGetSampleTime();
-	int x = 0;
-	int y = 0;
-	if((inputs[TRIG_INPUT].value || params[TRIG_PARAM_BUTTON].value) && compiled)
-	{
-		
-		t = 0;
-		
-		accumulator = 0.0f;
-		running = true;	
-		
-	}
-	
-	x=(uint8_t)(((inputs[X_INPUT].value+5.0f)/10.0)*255); //scale -5.0 .. +5.0 to 0-255
-	y=(uint8_t)(((inputs[Y_INPUT].value+5.0f)/10.0)*255); //scale -5.0 .. +5.0 to 0-255
-	
-	
-	
-	accumulator = accumulator + deltaTime;
-	t = accumulator/timestep;
-	
-	
-	// Compute the output
-	int retval = 0;
-	
-	if(running)
-	{
-		
-		duk_dup(ctx, 0);
-		duk_push_int(ctx, t);
-		duk_push_int(ctx, x);
-		duk_push_int(ctx, y);
-		duk_call(ctx, 3);
-		retval = (uint8_t)duk_get_int_default(ctx, 1, 0);
-		duk_pop(ctx);
-			
-		
-	
-		//retval = rand()*255;
-	}
-	outputs[BYTEBEAT_OUTPUT].value = 5.0f * ((retval-127.0)/127.0);
-	lights[TRIGGER_LIGHT].value = max(inputs[TRIG_INPUT].value , params[TRIG_PARAM_BUTTON].value);
-	// Blink light at 1Hz
+void FrankBussFormulaModule::step() {
+    float deltaTime = engineGetSampleTime();
+    
+    // get inputs
+    float x = inputs[X_INPUT].value;
+	float y = inputs[Y_INPUT].value;
+	float z = inputs[Z_INPUT].value;
+    
+    // calculate formula
+	float val = 0;
+    try {
+        formula.setVariable("x", x);
+        formula.setVariable("y", y);
+        formula.setVariable("z", z);
+        val = clamp(formula.eval(), -5.0f, 5.0f);
+    } catch (exception *exc) {
+        // printf("Exception: %s\n", exc->what());
+        delete exc;
+    }
+
+    // set output
+	outputs[FORMULA_OUTPUT].value = val;
+
+    // Blink light at 1Hz
 	blinkPhase += deltaTime;
 	if (blinkPhase >= 1.0f)
 		blinkPhase -= 1.0f;
@@ -165,9 +96,9 @@ void BokontepByteBeatModule::step() {
 }
 
 
-struct BokontepByteBeatWidget : ModuleWidget {
+struct FrankBussFormulaWidget : ModuleWidget {
 	TextField *textField;	
-	BokontepByteBeatWidget(BokontepByteBeatModule *module) : ModuleWidget(module) {
+	FrankBussFormulaWidget(FrankBussFormulaModule *module) : ModuleWidget(module) {
 
 		setPanel(SVG::load(assetPlugin(plugin, "res/MyModule.svg")));
 
@@ -176,16 +107,12 @@ struct BokontepByteBeatWidget : ModuleWidget {
 		addChild(Widget::create<ScrewSilver>(Vec(RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 		addChild(Widget::create<ScrewSilver>(Vec(box.size.x - 2 * RACK_GRID_WIDTH, RACK_GRID_HEIGHT - RACK_GRID_WIDTH)));
 
-		//addParam(ParamWidget::create<Davies1900hBlackKnob>(Vec(28, 87), module, BokontepByteBeatModule::TRIG_PARAM, -3.0, 3.0, 0.0));
-		
-		addParam(ParamWidget::create<LEDButton>(Vec(42, 270), module, BokontepByteBeatModule::TRIG_PARAM_BUTTON, 0.0f, 1.0f, 0.0f));
-		addChild(ModuleLightWidget::create<MediumLight<GreenLight>>(Vec(46.4f, 274.4f), module, BokontepByteBeatModule::TRIGGER_LIGHT));
-		addInput(Port::create<PJ301MPort>(Vec(38, 300), Port::INPUT, module, BokontepByteBeatModule::TRIG_INPUT));
-		addInput(Port::create<PJ301MPort>(Vec(98, 300), Port::INPUT, module, BokontepByteBeatModule::X_INPUT));
-		addInput(Port::create<PJ301MPort>(Vec(153, 300), Port::INPUT, module, BokontepByteBeatModule::Y_INPUT));
-		addOutput(Port::create<PJ301MPort>(Vec(215, 300), Port::OUTPUT, module, BokontepByteBeatModule::BYTEBEAT_OUTPUT));
+		addInput(Port::create<PJ301MPort>(Vec(38, 260), Port::INPUT, module, FrankBussFormulaModule::X_INPUT));
+		addInput(Port::create<PJ301MPort>(Vec(98, 260), Port::INPUT, module, FrankBussFormulaModule::Y_INPUT));
+		addInput(Port::create<PJ301MPort>(Vec(153, 260), Port::INPUT, module, FrankBussFormulaModule::Z_INPUT));
+		addOutput(Port::create<PJ301MPort>(Vec(215, 260), Port::OUTPUT, module, FrankBussFormulaModule::FORMULA_OUTPUT));
 
-		addChild(ModuleLightWidget::create<MediumLight<RedLight>>(Vec(125, 100), module, BokontepByteBeatModule::BLINK_LIGHT));
+		addChild(ModuleLightWidget::create<MediumLight<RedLight>>(Vec(125, 100), module, FrankBussFormulaModule::BLINK_LIGHT));
 		textField = Widget::create<LedDisplayTextField>(mm2px(Vec(3, 42)));
 		textField->box.size = mm2px(Vec(85, 40));
 		textField->multiline = true;
@@ -220,4 +147,4 @@ struct BokontepByteBeatWidget : ModuleWidget {
 // author name for categorization per plugin, module slug (should never
 // change), human-readable module name, and any number of tags
 // (found in `include/tags.hpp`) separated by commas.
-Model *modelBokontepByteBeatMachine = Model::create<BokontepByteBeatModule, BokontepByteBeatWidget>("BokontepByteBeat", "BokontepByteBeatMachine", "Bokontep ByteBeat Machine", OSCILLATOR_TAG);
+Model *modelFrankBussFormula = Model::create<FrankBussFormulaModule, FrankBussFormulaWidget>("Frank Buss", "FrankBussFormula", "Formula", UTILITY_TAG);

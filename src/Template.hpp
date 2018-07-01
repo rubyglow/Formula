@@ -7,4 +7,4 @@ using namespace rack;
 extern Plugin *plugin;
 
 // Forward-declare each Model, defined in each module source file
-extern Model *modelBokontepByteBeatMachine;
+extern Model *modelFrankBussFormula;
