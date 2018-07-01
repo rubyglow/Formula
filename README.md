@@ -18,7 +18,7 @@ voltage is higher: max(x, y).
 The red LED is blinking if there is a parsing error. If it is on, the formula is running.
 
 There are also relational and logical operators defined. So you could write a function, which outputs the signal y, if x is
-less than 2.5 V, or outputs z, if x is 2.5 V or greater. The "true" value is -1, "false" is 0. This means the formula could look like this:
+less than 2.5 V, or outputs z, if x is 2.5 V or greater. The "true" value is 1, "false" is 0. This means the formula could look like this:
 (x<2.5)*y+(x>=2.5)*z
 
 You can read about the full documentation of the formula syntax here: http://www.frank-buss.de/formula/index.html
