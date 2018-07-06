@@ -6,7 +6,7 @@ This plugin provides 3 inputs: x, y and z. In the text field you can write a for
 For example `x+y` would be a simple adder.
 
 Some functions take 2 arguments. For example you could use the max function, to get either the input x or the input y, depending on which
-voltage is higher: max(x, y).
+voltage is higher: `max(x, y)`.
 
 The red LED is blinking if there is a parsing error. If it is on, the formula is running.
 
@@ -57,8 +57,8 @@ in Formula, but with `log(x)/log(2)` you can calculate the signal. So for `x=1.5
 
 The relational operators (<, >, <= and >=) allow other interesting applications. For example if you
 want to select one of two signals, based on the CV level of another signal (a multiplexer). Then you could use
-the formula `(z<=5)*x+(z>5)*y`. This would output y, if the level at the z input is 5V or less,
-otherwise it outputs y. It works because if `z<=5` is valid, it returns 1, otherwise 0.
+the formula `(z<=5)*x+(z>5)*y`. This would output x, if the level at the z input is 5V or less,
+otherwise it outputs y. It works because if `z<=5` is valid, the term evaluates to 1, otherwise to 0.
 
 ![alt text](mux.png "Multiplexer")
 
@@ -66,7 +66,7 @@ otherwise it outputs y. It works because if `z<=5` is valid, it returns 1, other
 
 Finally there are the boolean operators `&` for logical-and, `|` for logical-or and `!`for not.
 This can be useful, if you want to test two signals with the relational operators,
-like if x and y has some minimum volate, only the output the value of z. Or you could
+like if x and y has some minimum value at the same time, only then output the value of z. Or you could
 even use it to implement a 10 step sequencer with chromatic scale:
 
 ```
