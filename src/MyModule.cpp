@@ -7,9 +7,11 @@ struct FrankBussFormulaModule;
 class MyTextField : public LedDisplayTextField {
 public:
 	MyTextField() : LedDisplayTextField() {}
-	void setModule(FrankBussFormulaModule* _module) { module = _module; }
+	void setModule(FrankBussFormulaModule* _module) {
+		module = _module;
+	}
 	virtual void onTextChange() override;
-	
+
 private:
 	FrankBussFormulaModule* module;
 };
@@ -35,14 +37,14 @@ struct FrankBussFormulaModule : Module {
 		BLINK_LIGHT,
 		NUM_LIGHTS
 	};
-	
+
 	Formula formula;
 	MyTextField* textField;
 	bool compiled = false;
 	float phase = 0.0;
 	float blinkPhase = 0.0;
 
-    FrankBussFormulaModule() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {
+	FrankBussFormulaModule() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {
 	}
 
 	void step() override;
@@ -74,14 +76,14 @@ void MyTextField::onTextChange() {
 }
 
 void FrankBussFormulaModule::step() {
-    float deltaTime = engineGetSampleTime();
-    
-    // get inputs
-    float x = inputs[X_INPUT].value;
+	float deltaTime = engineGetSampleTime();
+
+	// get inputs
+	float x = inputs[X_INPUT].value;
 	float y = inputs[Y_INPUT].value;
 	float z = inputs[Z_INPUT].value;
-    
-    // calculate formula
+
+	// calculate formula
 	float val = 0;
 	if (compiled) {
 		try {
@@ -99,10 +101,10 @@ void FrankBussFormulaModule::step() {
 		}
 	}
 
-    // set output
+	// set output
 	outputs[FORMULA_OUTPUT].value = val;
 
-    // Blink light at 1Hz
+	// Blink light at 1Hz
 	blinkPhase += deltaTime;
 	if (blinkPhase >= 1.0f)
 		blinkPhase -= 1.0f;
@@ -118,7 +120,7 @@ void FrankBussFormulaModule::step() {
 
 
 struct FrankBussFormulaWidget : ModuleWidget {
-	MyTextField *textField;	
+	MyTextField *textField;
 	FrankBussFormulaWidget(FrankBussFormulaModule *module) : ModuleWidget(module) {
 
 		setPanel(SVG::load(assetPlugin(plugin, "res/MyModule.svg")));
@@ -138,16 +140,16 @@ struct FrankBussFormulaWidget : ModuleWidget {
 		textField->setModule(module);
 		textField->box.size = mm2px(Vec(85, 40));
 		textField->multiline = true;
-		
+
 		addChild(textField);
 		module->textField = this->textField;
 	}
-		json_t *toJson() override {
+	json_t *toJson() override {
 		json_t *rootJ = ModuleWidget::toJson();
 
 		// text
 		json_object_set_new(rootJ, "text", json_string(textField->text.c_str()));
-		
+
 		return rootJ;
 	}
 

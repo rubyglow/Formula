@@ -25,26 +25,28 @@ using namespace std;
 class ParserException : public exception
 {
 public:
-    ParserException(string message = "");
-    ParserException(const ParserException& other);
-    virtual ~ParserException();
-    ParserException& operator= (const ParserException& other);
-    const char *what() const throw () override;
-	string getMessage() { return m_message; }
+	ParserException(string message = "");
+	ParserException(const ParserException& other);
+	virtual ~ParserException();
+	ParserException& operator= (const ParserException& other);
+	const char *what() const throw () override;
+	string getMessage() {
+		return m_message;
+	}
 
 protected:
-    string m_message;
+	string m_message;
 };
 
 // Construct the exception
 inline ParserException::ParserException(const ParserException& other)
-: exception(other)
+	: exception(other)
 {
-    m_message = other.m_message;
+	m_message = other.m_message;
 }
 
 inline ParserException::ParserException(string message)
-: m_message(message)
+	: m_message(message)
 {}
 
 
@@ -57,15 +59,15 @@ inline ParserException::~ParserException()
 inline ParserException& ParserException::operator= (const ParserException& other)
 {
 	exception::operator= (other);
-    if (&other != this) m_message = other.m_message;
-    return *this;
+	if (&other != this) m_message = other.m_message;
+	return *this;
 }
 
 
 // Return descriptive message
 inline const char *ParserException::what() const throw ()
 {
-    return m_message.c_str();
+	return m_message.c_str();
 }
 
 

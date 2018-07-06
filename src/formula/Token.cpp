@@ -17,10 +17,10 @@ void OperatorToken::eval(Parser& parser) throw(SyntaxError)
 	// precondition
 	Token* nextToken = parser.peekNextToken();
 	if (!dynamic_cast<IdentifierToken*>(nextToken) &&
-		!dynamic_cast<OpenBracketToken*>(nextToken) &&
-		!dynamic_cast<NumberToken*>(nextToken) &&
-		!dynamic_cast<NotToken*>(nextToken) &&
-		!dynamic_cast<SubToken*>(nextToken))
+	        !dynamic_cast<OpenBracketToken*>(nextToken) &&
+	        !dynamic_cast<NumberToken*>(nextToken) &&
+	        !dynamic_cast<NotToken*>(nextToken) &&
+	        !dynamic_cast<SubToken*>(nextToken))
 	{
 		throw SyntaxError("Expecting a variable, function, '(', number, not or negate operator.");
 	}
@@ -59,18 +59,18 @@ void CommaToken::eval(Parser& parser) throw(SyntaxError)
 	// precondition
 	Token* nextToken = parser.peekNextToken();
 	if (!dynamic_cast<IdentifierToken*>(nextToken) &&
-		!dynamic_cast<OpenBracketToken*>(nextToken) &&
-		!dynamic_cast<NumberToken*>(nextToken) &&
-		!dynamic_cast<NotToken*>(nextToken) &&
-		!dynamic_cast<SubToken*>(nextToken))
+	        !dynamic_cast<OpenBracketToken*>(nextToken) &&
+	        !dynamic_cast<NumberToken*>(nextToken) &&
+	        !dynamic_cast<NotToken*>(nextToken) &&
+	        !dynamic_cast<SubToken*>(nextToken))
 	{
 		throw SyntaxError("Expecting a variable, function, '(', number, not or negate operator.");
 	}
 
 	// eval
 	while (parser.m_operators.size() > 0 && parser.m_operators.top()->getPrecedence() >= getPrecedence() &&
-		!( dynamic_cast<OpenBracketToken*>(parser.m_operators.top())
-		|| dynamic_cast<IdentifierToken*>(parser.m_operators.top()) ))
+	        !( dynamic_cast<OpenBracketToken*>(parser.m_operators.top())
+	           || dynamic_cast<IdentifierToken*>(parser.m_operators.top()) ))
 	{
 		parser.m_postfix += " ";
 		parser.m_postfix += parser.m_operators.top()->getValue();
@@ -88,11 +88,11 @@ void OpenBracketToken::eval(Parser& parser) throw(SyntaxError)
 	// precondition
 	Token* nextToken = parser.peekNextToken();
 	if (!dynamic_cast<IdentifierToken*>(nextToken) &&
-		!dynamic_cast<OpenBracketToken*>(nextToken) &&
-		!dynamic_cast<CloseBracketToken*>(nextToken) &&
-		!dynamic_cast<NumberToken*>(nextToken) &&
-		!dynamic_cast<NotToken*>(nextToken) &&
-		!dynamic_cast<SubToken*>(nextToken))
+	        !dynamic_cast<OpenBracketToken*>(nextToken) &&
+	        !dynamic_cast<CloseBracketToken*>(nextToken) &&
+	        !dynamic_cast<NumberToken*>(nextToken) &&
+	        !dynamic_cast<NotToken*>(nextToken) &&
+	        !dynamic_cast<SubToken*>(nextToken))
 	{
 		throw SyntaxError("Expecting a variable, function, '(', ')', number, not or negate operator.");
 	}
@@ -149,8 +149,8 @@ void CloseBracketToken::eval(Parser& parser) throw(SyntaxError, TooManyArguments
 
 	// eval
 	while (parser.m_operators.size() > 0 &&
-		!( dynamic_cast<OpenBracketToken*>(parser.m_operators.top())
-		|| dynamic_cast<IdentifierToken*>(parser.m_operators.top()) ))
+	        !( dynamic_cast<OpenBracketToken*>(parser.m_operators.top())
+	           || dynamic_cast<IdentifierToken*>(parser.m_operators.top()) ))
 	{
 		Token* t = parser.m_operators.top();
 		parser.m_postfix += " ";
@@ -172,14 +172,14 @@ void CloseBracketToken::eval(Parser& parser) throw(SyntaxError, TooManyArguments
 		parser.m_postfix += " ";
 		parser.m_postfix += functionName;
 		switch (argCount) {
-			case 1:
-				parser.m_evaluator.addAction(new OneArgumentFunctionAction(&parser.m_evaluator, functionName));
-				break;
-			case 2:
-				parser.m_evaluator.addAction(new TwoArgumentsFunctionAction(&parser.m_evaluator, functionName));
-				break;
-			default:
-				throw TooManyArgumentsError(functionName);
+		case 1:
+			parser.m_evaluator.addAction(new OneArgumentFunctionAction(&parser.m_evaluator, functionName));
+			break;
+		case 2:
+			parser.m_evaluator.addAction(new TwoArgumentsFunctionAction(&parser.m_evaluator, functionName));
+			break;
+		default:
+			throw TooManyArgumentsError(functionName);
 		}
 	}
 	parser.m_operators.pop();
@@ -193,9 +193,9 @@ void SubToken::eval(Parser& parser) throw(SyntaxError)
 
 	// eval
 	Token* lastToken = parser.peekLastToken();
-	if (dynamic_cast<NumberToken*>(lastToken) 
-		|| dynamic_cast<IdentifierToken*>(lastToken)
-		|| dynamic_cast<CloseBracketToken*>(lastToken))
+	if (dynamic_cast<NumberToken*>(lastToken)
+	        || dynamic_cast<IdentifierToken*>(lastToken)
+	        || dynamic_cast<CloseBracketToken*>(lastToken))
 	{
 		m_action = new SubAction();
 		m_precedence = AddSubPrecedence;
@@ -214,9 +214,9 @@ void AddToken::eval(Parser& parser) throw(SyntaxError)
 
 	// eval
 	Token* lastToken = parser.peekLastToken();
-	if (dynamic_cast<NumberToken*>(lastToken) 
-		|| dynamic_cast<IdentifierToken*>(lastToken)
-		|| dynamic_cast<CloseBracketToken*>(lastToken))
+	if (dynamic_cast<NumberToken*>(lastToken)
+	        || dynamic_cast<IdentifierToken*>(lastToken)
+	        || dynamic_cast<CloseBracketToken*>(lastToken))
 	{
 		OperatorToken::eval(parser);
 	} else

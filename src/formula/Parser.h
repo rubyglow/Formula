@@ -30,20 +30,40 @@ class Parser
 	friend class CloseBracketToken;
 	friend class IdentifierToken;
 	friend class CommaToken;
-	
+
 public:
 	Parser(string expression);
 	void setExpression(string expression) throw(SyntaxError, TooManyArgumentsError);
-	void setVariable(string name, float value) { m_evaluator.setVariable(name, value); }
-	void removeVariable(string name) { m_evaluator.removeVariable(name); }
-	void removeAllVariables() { m_evaluator.removeAllVariables(); }
-	void setFunction(string name, float(*function)()) { m_evaluator.setFunction(name, function); }
-	void setFunction(string name, float(*function)(float)) { m_evaluator.setFunction(name, function); }
-	void setFunction(string name, float(*function)(float, float)) { m_evaluator.setFunction(name, function); }
-	void removeFunction(string name) { m_evaluator.removeFunction(name); }
-	void removeAllFunctions() { m_evaluator.removeAllFunctions(); }
-	string getPostfix() { return m_postfix; }
-	float eval() throw(FunctionNotFound, VariableNotFound, StackUnderflow, MathError) { return m_evaluator.eval(); }
+	void setVariable(string name, float value) {
+		m_evaluator.setVariable(name, value);
+	}
+	void removeVariable(string name) {
+		m_evaluator.removeVariable(name);
+	}
+	void removeAllVariables() {
+		m_evaluator.removeAllVariables();
+	}
+	void setFunction(string name, float(*function)()) {
+		m_evaluator.setFunction(name, function);
+	}
+	void setFunction(string name, float(*function)(float)) {
+		m_evaluator.setFunction(name, function);
+	}
+	void setFunction(string name, float(*function)(float, float)) {
+		m_evaluator.setFunction(name, function);
+	}
+	void removeFunction(string name) {
+		m_evaluator.removeFunction(name);
+	}
+	void removeAllFunctions() {
+		m_evaluator.removeAllFunctions();
+	}
+	string getPostfix() {
+		return m_postfix;
+	}
+	float eval() throw(FunctionNotFound, VariableNotFound, StackUnderflow, MathError) {
+		return m_evaluator.eval();
+	}
 
 
 private:

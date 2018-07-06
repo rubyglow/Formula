@@ -158,9 +158,9 @@ string Parser::parseIdentifier(char c)
 	identifier += c;
 	c = skipAndPeekChar();
 	while (c != 0 && ((c >= 'a' && c <= 'z')
-		|| (c >= 'A' && c <= 'Z')
-		|| (c >= '0' && c <= '9')
-		|| c == '_'))
+	                  || (c >= 'A' && c <= 'Z')
+	                  || (c >= '0' && c <= '9')
+	                  || c == '_'))
 	{
 		identifier += c;
 		c = skipAndPeekChar();
@@ -194,89 +194,89 @@ void Parser::setExpression(string expression) throw(SyntaxError, TooManyArgument
 		while ((c = peekChar())) {
 			token = NULL;
 			switch (c) {
-				case '&':
-					token = new AndToken();
+			case '&':
+				token = new AndToken();
+				skipChar();
+				break;
+			case '|':
+				token = new OrToken();
+				skipChar();
+				break;
+			case '=':
+				token = new EqualToken();
+				skipChar();
+				break;
+			case '!':
+				skipChar();
+				if (peekChar() == '=') {
 					skipChar();
-					break;
-				case '|':
-					token = new OrToken();
+					token = new NotEqualToken();
+				} else {
+					token = new NotToken();
+				}
+				break;
+			case '<':
+				skipChar();
+				if (peekChar() == '=') {
 					skipChar();
-					break;
-				case '=':
-					token = new EqualToken();
+					token = new LessEqualToken();
+				} else {
+					token = new LessToken();
+				}
+				break;
+			case '>':
+				skipChar();
+				if (peekChar() == '=') {
 					skipChar();
-					break;
-				case '!':
+					token = new GreaterEqualToken();
+				} else {
+					token = new GreaterToken();
+				}
+				break;
+			case '+':
+				token = new AddToken();
+				skipChar();
+				break;
+			case '-':
+				token = new SubToken();
+				skipChar();
+				break;
+			case '*':
+				token = new MulToken();
+				skipChar();
+				break;
+			case '/':
+				token = new DivToken();
+				skipChar();
+				break;
+			case '^':
+				token = new PowerToken();
+				skipChar();
+				break;
+			case '(':
+				token = new OpenBracketToken();
+				skipChar();
+				break;
+			case ')':
+				token = new CloseBracketToken();
+				skipChar();
+				break;
+			case ',':
+				token = new CommaToken();
+				skipChar();
+				break;
+			default:
+				if ((c >= '0' && c <= '9') || c == '.') {
+					token = new NumberToken(parseNumber(c));
+				} else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') {
+					token = new IdentifierToken(parseIdentifier(c));
+				} else if (c == 9 || c == 10 || c == 13 || c == 32) {
 					skipChar();
-					if (peekChar() == '=') {
-						skipChar();
-						token = new NotEqualToken();
-					} else {
-						token = new NotToken();
-					}
-					break;
-				case '<':
+					continue;
+				} else {
 					skipChar();
-					if (peekChar() == '=') {
-						skipChar();
-						token = new LessEqualToken();
-					} else {
-						token = new LessToken();
-					}
-					break;
-				case '>':
-					skipChar();
-					if (peekChar() == '=') {
-						skipChar();
-						token = new GreaterEqualToken();
-					} else {
-						token = new GreaterToken();
-					}
-					break;
-				case '+':
-					token = new AddToken();
-					skipChar();
-					break;
-				case '-':
-					token = new SubToken();
-					skipChar();
-					break;
-				case '*':
-					token = new MulToken();
-					skipChar();
-					break;
-				case '/':
-					token = new DivToken();
-					skipChar();
-					break;
-				case '^':
-					token = new PowerToken();
-					skipChar();
-					break;
-				case '(':
-					token = new OpenBracketToken();
-					skipChar();
-					break;
-				case ')':
-					token = new CloseBracketToken();
-					skipChar();
-					break;
-				case ',':
-					token = new CommaToken();
-					skipChar();
-					break;
-				default:
-					if ((c >= '0' && c <= '9') || c == '.') {
-						token = new NumberToken(parseNumber(c));
-					} else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') {
-						token = new IdentifierToken(parseIdentifier(c));
-					} else if (c == 9 || c == 10 || c == 13 || c == 32) {
-						skipChar();
-						continue;
-					} else {
-						skipChar();
-						throw SyntaxError(string("Invalid character: ") + c);
-					}
+					throw SyntaxError(string("Invalid character: ") + c);
+				}
 			}
 			if (token) m_tokens.push_back(token);
 		}
