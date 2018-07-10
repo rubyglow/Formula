@@ -43,6 +43,7 @@ Parser::Parser(string expression)
 	m_evaluator.setFunction("abs", fabsf);
 	m_evaluator.setFunction("mod", fmodf);
 	m_evaluator.setFunction("log", logf);
+	m_evaluator.setFunction("log2", log2f);
 	m_evaluator.setFunction("log10", log10f);
 	m_evaluator.setFunction("pow", powf);
 	m_evaluator.setFunction("sin", sinf);
@@ -54,7 +55,6 @@ Parser::Parser(string expression)
 	m_evaluator.setFunction("floor", floorf);
 	m_evaluator.setFunction("max", ParserMax);
 	m_evaluator.setFunction("min", ParserMin);
-	m_evaluator.setFunction("time", ParserTime);
 
 	setExpression(expression);
 }
