@@ -167,8 +167,8 @@ struct FrankBussFormulaModule : Module {
 				}
 
 				compiled = true;
-			} catch (exception&) {
-				// printf("Exception: %s\n", exc.what());
+			} catch (exception& e) {
+				printf("formula exception: %s\n", e.what());
 			}
 		}
 	}

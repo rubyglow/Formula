@@ -67,7 +67,7 @@ public:
 
 
 private:
-	void setExpressionFinally();
+	void deleteTokens();
 	string parseNumber(char c) throw(SyntaxError);
 	string parseIdentifier(char c);
 	char peekChar();

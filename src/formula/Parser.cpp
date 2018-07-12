@@ -169,9 +169,8 @@ string Parser::parseIdentifier(char c)
 }
 
 
-void Parser::setExpressionFinally()
+void Parser::deleteTokens()
 {
-	// delete tokens
 	for (int i = 0; i < (int) m_tokens.size(); i++) delete m_tokens[i];
 	m_tokens.clear();
 }
@@ -186,7 +185,7 @@ void Parser::setExpression(string expression) throw(SyntaxError, TooManyArgument
 		m_evaluator.removeAllActions();
 		m_functionArgumentCountStack = stack<int>();
 		m_operators = stack<Token*>();
-		m_tokens.clear();
+		deleteTokens();
 
 		m_currentIndex = 0;
 		char c;
@@ -288,8 +287,8 @@ void Parser::setExpression(string expression) throw(SyntaxError, TooManyArgument
 
 	} catch (ParserException&)
 	{
-		setExpressionFinally();
+		deleteTokens();
 		throw;
 	}
-	setExpressionFinally();
+	deleteTokens();
 }

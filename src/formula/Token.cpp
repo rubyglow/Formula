@@ -142,9 +142,9 @@ void CloseBracketToken::eval(Parser& parser) throw(SyntaxError, TooManyArguments
 {
 	// precondition
 	Token* nextToken = parser.peekNextToken();
-	if (nextToken && !dynamic_cast<CloseBracketToken*>(nextToken) && !dynamic_cast<OperatorToken*>(nextToken))
+	if (nextToken && !dynamic_cast<CloseBracketToken*>(nextToken) && !dynamic_cast<OperatorToken*>(nextToken) && !dynamic_cast<CommaToken*>(nextToken))
 	{
-		throw SyntaxError("Expected ')' or operator after ')'.");
+		throw SyntaxError("Expected ')', ',' or operator after ')'.");
 	}
 
 	// eval
