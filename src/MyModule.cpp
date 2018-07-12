@@ -71,16 +71,16 @@ struct FrankBussFormulaModule : Module {
 	void step() override {
 		if (clampTrigger.process(params[CLAMP_PARAM].value)) {
 			doclamp = !doclamp;
-		}	
+		}
 		if (bMinus1Trigger.process(params[B_MINUS_1_PARAM].value)) {
 			radiobutton = -1.0f;
 		}	
 		if (b0Trigger.process(params[B_0_PARAM].value)) {
 			radiobutton = 0.0f;
-		}	
+		}
 		if (b1Trigger.process(params[B_1_PARAM].value)) {
 			radiobutton = 1.0f;
-		}	
+		}
 		
 		float deltaTime = engineGetSampleTime();
 
@@ -238,7 +238,7 @@ struct FrankBussFormulaWidget : ModuleWidget {
 		addParam(ParamWidget::create<LEDButton>(Vec(30, 260), module, FrankBussFormulaModule::B_MINUS_1_PARAM, 0.0f, 1.0f, 0.0f));
 		addChild(ModuleLightWidget::create<MediumLight<GreenLight>>(Vec(34.4f, 264.4f), module, FrankBussFormulaModule::B_MINUS_1_LIGHT));
 		
-		addParam(ParamWidget::create<LEDButton>(Vec(75, 260), module, FrankBussFormulaModule::B_0_PARAM, 0.0f, 1.0f, 1.0f));
+		addParam(ParamWidget::create<LEDButton>(Vec(75, 260), module, FrankBussFormulaModule::B_0_PARAM, 0.0f, 1.0f, 0.0f));
 		addChild(ModuleLightWidget::create<MediumLight<GreenLight>>(Vec(79.4f, 264.4f), module, FrankBussFormulaModule::B_0_LIGHT));
 
 		addParam(ParamWidget::create<LEDButton>(Vec(120, 260), module, FrankBussFormulaModule::B_1_PARAM, 0.0f, 1.0f, 0.0f));
@@ -253,7 +253,7 @@ struct FrankBussFormulaWidget : ModuleWidget {
 		addInput(Port::create<PJ301MPort>(Vec(100, 310), Port::INPUT, module, FrankBussFormulaModule::Y_INPUT));
 		addInput(Port::create<PJ301MPort>(Vec(140, 310), Port::INPUT, module, FrankBussFormulaModule::Z_INPUT));
 
-		addParam(ParamWidget::create<LEDButton>(Vec(190, 314), module, FrankBussFormulaModule::CLAMP_PARAM, 0.0f, 1.0f, 1.0f));
+		addParam(ParamWidget::create<LEDButton>(Vec(190, 314), module, FrankBussFormulaModule::CLAMP_PARAM, 0.0f, 1.0f, 0.0f));
 		addChild(ModuleLightWidget::create<MediumLight<GreenLight>>(Vec(194.4f, 318.4f), module, FrankBussFormulaModule::CLAMP_LIGHT));
 
 		addOutput(Port::create<PJ301MPort>(Vec(220, 310), Port::OUTPUT, module, FrankBussFormulaModule::FORMULA_OUTPUT));
