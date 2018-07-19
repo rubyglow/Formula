@@ -26,7 +26,7 @@ Formula::~Formula()
 	delete m_parser;
 }
 
-void Formula::setExpression(string expression) throw(SyntaxError, TooManyArgumentsError)
+void Formula::setExpression(string expression) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound)
 {
 	m_parser->setExpression(expression);
 }
@@ -61,20 +61,6 @@ void Formula::setFunction(string name, float(*function)(float))
 void Formula::setFunction(string name, float(*function)(float, float))
 {
 	m_parser->setFunction(name, function);
-}
-
-
-
-void Formula::removeFunction(string name)
-{
-	m_parser->removeFunction(name);
-}
-
-
-
-void Formula::removeAllFunctions()
-{
-	m_parser->removeAllFunctions();
 }
 
 

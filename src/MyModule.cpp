@@ -114,15 +114,22 @@ struct FrankBussFormulaModule : Module {
 				float k = params[KNOB_PARAM].value;
 
 				// set all variables
-				*formulaP = *freqFormulaP = phase;
-				*formulaK = *freqFormulaK = k;
-				*formulaB = *freqFormulaB = radiobutton;
-				*formulaW = *freqFormulaW = w;
-				*formulaX = *freqFormulaX = x;
-				*formulaY = *freqFormulaY = y;
-				*formulaZ = *freqFormulaZ = z;
+				*formulaP = phase;
+				*formulaK = k;
+				*formulaB = radiobutton;
+				*formulaW = w;
+				*formulaX = x;
+				*formulaY = y;
+				*formulaZ = z;
 
 				if (freqFormulaEnabled) {
+					*freqFormulaP = phase;
+					*freqFormulaK = k;
+					*freqFormulaB = radiobutton;
+					*freqFormulaW = w;
+					*freqFormulaX = x;
+					*freqFormulaY = y;
+					*freqFormulaZ = z;
 					float freq = evalFormula(freqFormula);
 					phase += freq * engineGetSampleTime();
 					if (phase > 1.0f) phase -= 1.0f;
@@ -157,7 +164,6 @@ struct FrankBussFormulaModule : Module {
 	}
 
 	void parseFormula(Formula& formula, string expr) {
-		formula.setExpression(expr);
 		formula.setVariable("pi", M_PI);
 		formula.setVariable("e", M_E);
 		
@@ -168,6 +174,8 @@ struct FrankBussFormulaModule : Module {
 		formula.setVariable("x", 0);
 		formula.setVariable("y", 0);
 		formula.setVariable("z", 0);
+
+		formula.setExpression(expr);
 	}
 
 	float evalFormula(Formula& formula) {
@@ -198,13 +206,15 @@ struct FrankBussFormulaModule : Module {
 				formulaY = formula.getVariableAddress("y");
 				formulaZ = formula.getVariableAddress("z");
 
-				freqFormulaP = freqFormula.getVariableAddress("p");
-				freqFormulaK = freqFormula.getVariableAddress("k");
-				freqFormulaB = freqFormula.getVariableAddress("b");
-				freqFormulaW = freqFormula.getVariableAddress("w");
-				freqFormulaX = freqFormula.getVariableAddress("x");
-				freqFormulaY = freqFormula.getVariableAddress("y");
-				freqFormulaZ = freqFormula.getVariableAddress("z");
+				if (freqFormulaEnabled) {
+					freqFormulaP = freqFormula.getVariableAddress("p");
+					freqFormulaK = freqFormula.getVariableAddress("k");
+					freqFormulaB = freqFormula.getVariableAddress("b");
+					freqFormulaW = freqFormula.getVariableAddress("w");
+					freqFormulaX = freqFormula.getVariableAddress("x");
+					freqFormulaY = freqFormula.getVariableAddress("y");
+					freqFormulaZ = freqFormula.getVariableAddress("z");
+				}
 				
 				compiled = true;
 			} catch (exception& e) {

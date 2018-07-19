@@ -102,7 +102,7 @@ void OpenBracketToken::eval(Parser& parser) throw(SyntaxError)
 	parser.skipToken();
 }
 
-void IdentifierToken::eval(Parser& parser) throw(SyntaxError)
+void IdentifierToken::eval(Parser& parser) throw(SyntaxError, FunctionNotFound)
 {
 	// precondition
 	Token* nextToken = parser.peekNextToken();
@@ -121,7 +121,7 @@ void IdentifierToken::eval(Parser& parser) throw(SyntaxError)
 
 		// test, if this is a function without an argument
 		if (dynamic_cast<CloseBracketToken*>(parser.peekToken())) {
-			parser.m_evaluator.addAction(new NoArgumentFunctionAction(&parser.m_evaluator, m_value));
+			parser.m_evaluator.addAction(new NoArgumentFunctionAction(&parser.m_evaluator, parser.getNoArgumentFunction(m_value)));
 			// skip ')'
 			parser.skipToken();
 		} else {
@@ -138,7 +138,7 @@ void IdentifierToken::eval(Parser& parser) throw(SyntaxError)
 }
 
 
-void CloseBracketToken::eval(Parser& parser) throw(SyntaxError, TooManyArgumentsError)
+void CloseBracketToken::eval(Parser& parser) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound)
 {
 	// precondition
 	Token* nextToken = parser.peekNextToken();
@@ -173,10 +173,10 @@ void CloseBracketToken::eval(Parser& parser) throw(SyntaxError, TooManyArguments
 		parser.m_postfix += functionName;
 		switch (argCount) {
 		case 1:
-			parser.m_evaluator.addAction(new OneArgumentFunctionAction(&parser.m_evaluator, functionName));
+			parser.m_evaluator.addAction(new OneArgumentFunctionAction(&parser.m_evaluator, parser.getOneArgumentFunction(functionName)));
 			break;
 		case 2:
-			parser.m_evaluator.addAction(new TwoArgumentsFunctionAction(&parser.m_evaluator, functionName));
+			parser.m_evaluator.addAction(new TwoArgumentsFunctionAction(&parser.m_evaluator, parser.getTwoArgumentsFunction(functionName)));
 			break;
 		default:
 			throw TooManyArgumentsError(functionName);

@@ -33,28 +33,21 @@ class Parser
 
 public:
 	Parser(string expression);
-	void setExpression(string expression) throw(SyntaxError, TooManyArgumentsError);
+	~Parser();
+	void setExpression(string expression) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound);
 	void setVariable(string name, float value) {
 		m_evaluator.setVariable(name, value);
 	}
 	float* getVariableAddress(string name) {
 		return m_evaluator.getVariableAddress(name);
 	}
-	void setFunction(string name, float(*function)()) {
-		m_evaluator.setFunction(name, function);
-	}
-	void setFunction(string name, float(*function)(float)) {
-		m_evaluator.setFunction(name, function);
-	}
-	void setFunction(string name, float(*function)(float, float)) {
-		m_evaluator.setFunction(name, function);
-	}
-	void removeFunction(string name) {
-		m_evaluator.removeFunction(name);
-	}
-	void removeAllFunctions() {
-		m_evaluator.removeAllFunctions();
-	}
+	void setFunction(string name, float(*function)());
+	void setFunction(string name, float(*function)(float));
+	void setFunction(string name, float(*function)(float, float));
+	float(*getNoArgumentFunction(string name))() throw(FunctionNotFound);
+	float(*getOneArgumentFunction(string name))(float) throw(FunctionNotFound);
+	float(*getTwoArgumentsFunction(string name))(float, float) throw(FunctionNotFound);
+	
 	string getPostfix() {
 		return m_postfix;
 	}
@@ -83,6 +76,9 @@ private:
 	stack<Token*> m_operators;
 	vector<Token*> m_tokens;
 	stack<int> m_functionArgumentCountStack;
+	map<string, float(*)()> m_noArgumentFunctions;
+	map<string, float(*)(float)> m_oneArgumentFunctions;
+	map<string, float(*)(float, float)> m_twoArgumentsFunctions;
 };
 
 

@@ -161,14 +161,6 @@ public:
 	void setVariable(string name, float value);
 	float getVariable(string name) throw(VariableNotFound);
 	float* getVariableAddress(string name) throw(VariableNotFound);
-	void setFunction(string name, float(*function)());
-	void setFunction(string name, float(*function)(float));
-	void setFunction(string name, float(*function)(float, float));
-	void removeFunction(string name);
-	void removeAllFunctions();
-	float evalFunction(string name) throw(FunctionNotFound, StackUnderflow, MathError);
-	float evalFunction(string name, float argument) throw(FunctionNotFound, StackUnderflow, MathError);
-	float evalFunction(string name, float argument1, float argument2) throw(FunctionNotFound, StackUnderflow, MathError);
 
 private:
 	NumberStack m_numberStack;
@@ -177,9 +169,6 @@ private:
 
 	vector<Action*> m_actions;
 	map<string, float*> m_variables;
-	map<string, float(*)()> m_noArgumentFunctions;
-	map<string, float(*)(float)> m_oneArgumentFunctions;
-	map<string, float(*)(float, float)> m_twoArgumentsFunctions;
 };
 
 
@@ -199,34 +188,34 @@ private:
 class NoArgumentFunctionAction : public Action
 {
 public:
-	NoArgumentFunctionAction(Evaluator* evaluator, string name) : m_evaluator(evaluator), m_name(name) {}
+	NoArgumentFunctionAction(Evaluator* evaluator, float(*function)()) : m_evaluator(evaluator), m_function(function) {}
 	void run(NumberStack& numberStack) throw(FunctionNotFound, MathError) override;
 
 private:
 	Evaluator* m_evaluator;
-	string m_name;
+	float(*m_function)();
 };
 
 class OneArgumentFunctionAction : public Action
 {
 public:
-	OneArgumentFunctionAction(Evaluator* evaluator, string name) : m_evaluator(evaluator), m_name(name) {}
+	OneArgumentFunctionAction(Evaluator* evaluator, float(*function)(float)) : m_evaluator(evaluator), m_function(function) {}
 	void run(NumberStack& numberStack) throw(FunctionNotFound, StackUnderflow, MathError) override;
 
 private:
 	Evaluator* m_evaluator;
-	string m_name;
+	float(*m_function)(float);
 };
 
 class TwoArgumentsFunctionAction : public Action
 {
 public:
-	TwoArgumentsFunctionAction(Evaluator* evaluator, string name) : m_evaluator(evaluator), m_name(name) {}
+	TwoArgumentsFunctionAction(Evaluator* evaluator, float(*function)(float, float)) : m_evaluator(evaluator), m_function(function) {}
 	void run(NumberStack& numberStack) throw(FunctionNotFound, StackUnderflow, MathError) override;
 
 private:
 	Evaluator* m_evaluator;
-	string m_name;
+	float(*m_function)(float, float);
 };
 
 

@@ -226,78 +226,6 @@ float* Evaluator::getVariableAddress(string name) throw(VariableNotFound)
 	}
 }
 
-void Evaluator::setFunction(string name, float(*function)())
-{
-	m_noArgumentFunctions[name] = function;
-}
-
-void Evaluator::setFunction(string name, float(*function)(float))
-{
-	m_oneArgumentFunctions[name] = function;
-}
-
-void Evaluator::setFunction(string name, float(*function)(float, float))
-{
-	m_twoArgumentsFunctions[name] = function;
-}
-
-void Evaluator::removeFunction(string name)
-{
-	map<string, float(*)()>::iterator no = m_noArgumentFunctions.find(name);
-	if (no != m_noArgumentFunctions.end()) {
-		m_noArgumentFunctions.erase(no);
-	}
-	map<string, float(*)(float)>::iterator one = m_oneArgumentFunctions.find(name);
-	if (one != m_oneArgumentFunctions.end()) {
-		m_oneArgumentFunctions.erase(one);
-	}
-	map<string, float(*)(float, float)>::iterator two = m_twoArgumentsFunctions.find(name);
-	if (two != m_twoArgumentsFunctions.end()) {
-		m_twoArgumentsFunctions.erase(two);
-	}
-}
-
-void Evaluator::removeAllFunctions()
-{
-	m_noArgumentFunctions.clear();
-	m_oneArgumentFunctions.clear();
-	m_twoArgumentsFunctions.clear();
-}
-
-float Evaluator::evalFunction(string name) throw(FunctionNotFound, StackUnderflow, MathError)
-{
-	float(*function)() = m_noArgumentFunctions[name];
-	if (function) {
-		return function();
-	} else {
-		throw FunctionNotFound(name);
-	}
-	return 0;
-}
-
-float Evaluator::evalFunction(string name, float argument) throw(FunctionNotFound, StackUnderflow, MathError)
-{
-	float(*function)(float) = m_oneArgumentFunctions[name];
-	if (function) {
-		return function(argument);
-	} else {
-		throw FunctionNotFound(name);
-	}
-	return 0;
-}
-
-float Evaluator::evalFunction(string name, float argument1, float argument2) throw(FunctionNotFound, StackUnderflow, MathError)
-{
-	float(*function)(float, float) = m_twoArgumentsFunctions[name];
-	if (function) {
-		return function(argument1, argument2);
-	} else {
-		throw FunctionNotFound(name);
-	}
-	return 0;
-}
-
-
 void Evaluator::deleteActions()
 {
 	for (int i = 0; i < (int) m_actions.size(); i++) delete m_actions[i];
@@ -314,13 +242,13 @@ void VariableAction::run(NumberStack& numberStack) throw(VariableNotFound, MathE
 
 void NoArgumentFunctionAction::run(NumberStack& numberStack) throw(FunctionNotFound, MathError)
 {
-	numberStack.push(m_evaluator->evalFunction(m_name));
+	numberStack.push(m_function());
 	checkTopStackElement(numberStack);
 }
 
 void OneArgumentFunctionAction::run(NumberStack& numberStack) throw(FunctionNotFound, StackUnderflow, MathError)
 {
-	numberStack.push(m_evaluator->evalFunction(m_name, numberStack.pop()));
+	numberStack.push(m_function(numberStack.pop()));
 	checkTopStackElement(numberStack);
 }
 
@@ -328,6 +256,6 @@ void TwoArgumentsFunctionAction::run(NumberStack& numberStack) throw(FunctionNot
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
-	numberStack.push(m_evaluator->evalFunction(m_name, op1, op2));
+	numberStack.push(m_function(op1, op2));
 	checkTopStackElement(numberStack);
 }

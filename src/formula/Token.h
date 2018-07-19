@@ -258,7 +258,7 @@ class IdentifierToken : public Token
 {
 public:
 	IdentifierToken(string value) : Token(value) {}
-	void eval(Parser& parser) throw(SyntaxError) override;
+	void eval(Parser& parser) throw(SyntaxError, FunctionNotFound) override;
 };
 
 
@@ -266,5 +266,5 @@ class CloseBracketToken : public Token
 {
 public:
 	CloseBracketToken() : Token(")") {}
-	void eval(Parser& parser) throw(SyntaxError, TooManyArgumentsError) override;
+	void eval(Parser& parser) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound) override;
 };

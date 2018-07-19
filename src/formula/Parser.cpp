@@ -33,33 +33,36 @@ float ParserTime()
 
 Parser::Parser(string expression)
 {
-	// remove old variables
-	m_evaluator = Evaluator();
-	
-	m_evaluator.setFunction("acos", acosf);
-	m_evaluator.setFunction("asin", asinf);
-	m_evaluator.setFunction("atan", atanf);
-	m_evaluator.setFunction("atan2", atan2f);
-	m_evaluator.setFunction("cos", cosf);
-	m_evaluator.setFunction("cosh", coshf);
-	m_evaluator.setFunction("exp", expf);
-	m_evaluator.setFunction("abs", fabsf);
-	m_evaluator.setFunction("mod", fmodf);
-	m_evaluator.setFunction("log", logf);
-	m_evaluator.setFunction("log2", log2f);
-	m_evaluator.setFunction("log10", log10f);
-	m_evaluator.setFunction("pow", powf);
-	m_evaluator.setFunction("sin", sinf);
-	m_evaluator.setFunction("sinh", sinhf);
-	m_evaluator.setFunction("tan", tanf);
-	m_evaluator.setFunction("tanh", tanhf);
-	m_evaluator.setFunction("sqrt", sqrtf);
-	m_evaluator.setFunction("ceil", ceilf);
-	m_evaluator.setFunction("floor", floorf);
-	m_evaluator.setFunction("max", ParserMax);
-	m_evaluator.setFunction("min", ParserMin);
+	setFunction("acos", acosf);
+	setFunction("asin", asinf);
+	setFunction("atan", atanf);
+	setFunction("atan2", atan2f);
+	setFunction("cos", cosf);
+	setFunction("cosh", coshf);
+	setFunction("exp", expf);
+	setFunction("abs", fabsf);
+	setFunction("mod", fmodf);
+	setFunction("log", logf);
+	setFunction("log2", log2f);
+	setFunction("log10", log10f);
+	setFunction("pow", powf);
+	setFunction("sin", sinf);
+	setFunction("sinh", sinhf);
+	setFunction("tan", tanf);
+	setFunction("tanh", tanhf);
+	setFunction("sqrt", sqrtf);
+	setFunction("ceil", ceilf);
+	setFunction("floor", floorf);
+	setFunction("max", ParserMax);
+	setFunction("min", ParserMin);
 
 	setExpression(expression);
+}
+
+
+Parser::~Parser()
+{
+	deleteTokens();
 }
 
 
@@ -179,119 +182,156 @@ void Parser::deleteTokens()
 }
 
 
-void Parser::setExpression(string expression) throw(SyntaxError, TooManyArgumentsError)
+void Parser::setExpression(string expression) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound)
 {
-	try {
-		m_expression = string("(") + expression + ")";
+	m_expression = string("(") + expression + ")";
 
-		m_postfix = "";
-		m_evaluator.removeAllActions();
-		m_functionArgumentCountStack = stack<int>();
-		m_operators = stack<Token*>();
-		deleteTokens();
-
-		m_currentIndex = 0;
-		char c;
-		Token* token;
-		while ((c = peekChar())) {
-			token = NULL;
-			switch (c) {
-			case '&':
-				token = new AndToken();
-				skipChar();
-				break;
-			case '|':
-				token = new OrToken();
-				skipChar();
-				break;
-			case '=':
-				token = new EqualToken();
-				skipChar();
-				break;
-			case '!':
-				skipChar();
-				if (peekChar() == '=') {
-					skipChar();
-					token = new NotEqualToken();
-				} else {
-					token = new NotToken();
-				}
-				break;
-			case '<':
-				skipChar();
-				if (peekChar() == '=') {
-					skipChar();
-					token = new LessEqualToken();
-				} else {
-					token = new LessToken();
-				}
-				break;
-			case '>':
-				skipChar();
-				if (peekChar() == '=') {
-					skipChar();
-					token = new GreaterEqualToken();
-				} else {
-					token = new GreaterToken();
-				}
-				break;
-			case '+':
-				token = new AddToken();
-				skipChar();
-				break;
-			case '-':
-				token = new SubToken();
-				skipChar();
-				break;
-			case '*':
-				token = new MulToken();
-				skipChar();
-				break;
-			case '/':
-				token = new DivToken();
-				skipChar();
-				break;
-			case '^':
-				token = new PowerToken();
-				skipChar();
-				break;
-			case '(':
-				token = new OpenBracketToken();
-				skipChar();
-				break;
-			case ')':
-				token = new CloseBracketToken();
-				skipChar();
-				break;
-			case ',':
-				token = new CommaToken();
-				skipChar();
-				break;
-			default:
-				if ((c >= '0' && c <= '9') || c == '.') {
-					token = new NumberToken(parseNumber(c));
-				} else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') {
-					token = new IdentifierToken(parseIdentifier(c));
-				} else if (c == 9 || c == 10 || c == 13 || c == 32) {
-					skipChar();
-					continue;
-				} else {
-					skipChar();
-					throw SyntaxError(string("Invalid character: ") + c);
-				}
-			}
-			if (token) m_tokens.push_back(token);
-		}
-
-		m_currentTokenIndex = 0;
-		while ((token = peekToken())) token->eval(*this);
-		if (m_operators.size() > 0) throw SyntaxError("Missing ')'.");
-		if (m_postfix.size() > 0) m_postfix = m_postfix.substr(1);
-
-	} catch (ParserException&)
-	{
-		deleteTokens();
-		throw;
-	}
+	m_postfix = "";
+	m_evaluator.removeAllActions();
+	m_functionArgumentCountStack = stack<int>();
+	m_operators = stack<Token*>();
 	deleteTokens();
+
+	m_currentIndex = 0;
+	char c;
+	Token* token;
+	while ((c = peekChar())) {
+		token = NULL;
+		switch (c) {
+		case '&':
+			token = new AndToken();
+			skipChar();
+			break;
+		case '|':
+			token = new OrToken();
+			skipChar();
+			break;
+		case '=':
+			token = new EqualToken();
+			skipChar();
+			break;
+		case '!':
+			skipChar();
+			if (peekChar() == '=') {
+				skipChar();
+				token = new NotEqualToken();
+			} else {
+				token = new NotToken();
+			}
+			break;
+		case '<':
+			skipChar();
+			if (peekChar() == '=') {
+				skipChar();
+				token = new LessEqualToken();
+			} else {
+				token = new LessToken();
+			}
+			break;
+		case '>':
+			skipChar();
+			if (peekChar() == '=') {
+				skipChar();
+				token = new GreaterEqualToken();
+			} else {
+				token = new GreaterToken();
+			}
+			break;
+		case '+':
+			token = new AddToken();
+			skipChar();
+			break;
+		case '-':
+			token = new SubToken();
+			skipChar();
+			break;
+		case '*':
+			token = new MulToken();
+			skipChar();
+			break;
+		case '/':
+			token = new DivToken();
+			skipChar();
+			break;
+		case '^':
+			token = new PowerToken();
+			skipChar();
+			break;
+		case '(':
+			token = new OpenBracketToken();
+			skipChar();
+			break;
+		case ')':
+			token = new CloseBracketToken();
+			skipChar();
+			break;
+		case ',':
+			token = new CommaToken();
+			skipChar();
+			break;
+		default:
+			if ((c >= '0' && c <= '9') || c == '.') {
+				token = new NumberToken(parseNumber(c));
+			} else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_') {
+				token = new IdentifierToken(parseIdentifier(c));
+			} else if (c == 9 || c == 10 || c == 13 || c == 32) {
+				skipChar();
+				continue;
+			} else {
+				skipChar();
+				throw SyntaxError(string("Invalid character: ") + c);
+			}
+		}
+		if (token) m_tokens.push_back(token);
+	}
+
+	m_currentTokenIndex = 0;
+	while ((token = peekToken())) token->eval(*this);
+	if (m_operators.size() > 0) throw SyntaxError("Missing ')'.");
+	if (m_postfix.size() > 0) m_postfix = m_postfix.substr(1);
+}
+
+void Parser::setFunction(string name, float(*function)())
+{
+	m_noArgumentFunctions[name] = function;
+}
+
+void Parser::setFunction(string name, float(*function)(float))
+{
+	m_oneArgumentFunctions[name] = function;
+}
+
+void Parser::setFunction(string name, float(*function)(float, float))
+{
+	m_twoArgumentsFunctions[name] = function;
+}
+
+float(*Parser::getNoArgumentFunction(string name))() throw(FunctionNotFound)
+{
+	float(*function)() = m_noArgumentFunctions[name];
+	if (function) {
+		return function;
+	} else {
+		throw FunctionNotFound(name);
+	}
+}
+
+float(*Parser::getOneArgumentFunction(string name))(float) throw(FunctionNotFound)
+{
+	float(*function)(float) = m_oneArgumentFunctions[name];
+	if (function) {
+		return function;
+	} else {
+		throw FunctionNotFound(name);
+	}
+}
+
+float(*Parser::getTwoArgumentsFunction(string name))(float, float) throw(FunctionNotFound)
+{
+	float(*function)(float, float) = m_twoArgumentsFunctions[name];
+	if (function) {
+		return function;
+	} else {
+		throw FunctionNotFound(name);
+	}
 }
