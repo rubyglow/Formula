@@ -13,7 +13,6 @@
 
 #include <string>
 #include <vector>
-#include <stack>
 #include <map>
 #include <math.h>
 #include <float.h>
@@ -23,10 +22,17 @@
 
 using namespace std;
 
-class NumberStack : public stack<float>
+class NumberStack : public vector<float>
 {
 public:
-	float popWithReturn();
+	NumberStack() : m_size(0) {}
+	float top() throw(StackUnderflow);
+	float pop() throw(StackUnderflow);
+	void push(float value);
+	size_t size() { return m_size; }
+private:
+	vector<float> m_values;
+	size_t m_size;
 };
 
 
@@ -153,9 +159,8 @@ public:
 	float eval() throw(FunctionNotFound, VariableNotFound, StackUnderflow, MathError);
 	void removeAllActions();
 	void setVariable(string name, float value);
-	void removeVariable(string name);
-	void removeAllVariables();
 	float getVariable(string name) throw(VariableNotFound);
+	float* getVariableAddress(string name) throw(VariableNotFound);
 	void setFunction(string name, float(*function)());
 	void setFunction(string name, float(*function)(float));
 	void setFunction(string name, float(*function)(float, float));
@@ -166,11 +171,12 @@ public:
 	float evalFunction(string name, float argument1, float argument2) throw(FunctionNotFound, StackUnderflow, MathError);
 
 private:
+	NumberStack m_numberStack;
 
 	void deleteActions();
 
 	vector<Action*> m_actions;
-	map<string, float> m_variables;
+	map<string, float*> m_variables;
 	map<string, float(*)()> m_noArgumentFunctions;
 	map<string, float(*)(float)> m_oneArgumentFunctions;
 	map<string, float(*)(float, float)> m_twoArgumentsFunctions;
@@ -180,12 +186,13 @@ private:
 class VariableAction : public Action
 {
 public:
-	VariableAction(Evaluator* evaluator, string name) : m_evaluator(evaluator), m_name(name) {}
+	VariableAction(Evaluator* evaluator, string name) : m_evaluator(evaluator), m_name(name), m_variableAddress(NULL) {}
 	void run(NumberStack& numberStack) throw(VariableNotFound, MathError) override;
 
 private:
 	Evaluator* m_evaluator;
 	string m_name;
+	float* m_variableAddress;
 };
 
 

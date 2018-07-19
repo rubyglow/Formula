@@ -37,11 +37,8 @@ public:
 	void setVariable(string name, float value) {
 		m_evaluator.setVariable(name, value);
 	}
-	void removeVariable(string name) {
-		m_evaluator.removeVariable(name);
-	}
-	void removeAllVariables() {
-		m_evaluator.removeAllVariables();
+	float* getVariableAddress(string name) {
+		return m_evaluator.getVariableAddress(name);
 	}
 	void setFunction(string name, float(*function)()) {
 		m_evaluator.setFunction(name, function);

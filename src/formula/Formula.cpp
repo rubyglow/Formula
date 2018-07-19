@@ -38,19 +38,10 @@ void Formula::setVariable(string name, float value)
 }
 
 
-
-void Formula::removeVariable(string name)
+float* Formula::getVariableAddress(string name)
 {
-	m_parser->removeVariable(name);
+	return m_parser->getVariableAddress(name);
 }
-
-
-
-void Formula::removeAllVariables()
-{
-	m_parser->removeAllVariables();
-}
-
 
 
 void Formula::setFunction(string name, float(*function)())

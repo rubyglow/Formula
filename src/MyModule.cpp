@@ -65,6 +65,22 @@ struct FrankBussFormulaModule : Module {
 	SchmittTrigger b0Trigger;
 	SchmittTrigger b1Trigger;
 
+	float* formulaP = NULL;
+	float* formulaK = NULL;
+	float* formulaB = NULL;
+	float* formulaW = NULL;
+	float* formulaX = NULL;
+	float* formulaY = NULL;
+	float* formulaZ = NULL;
+
+	float* freqFormulaP = NULL;
+	float* freqFormulaK = NULL;
+	float* freqFormulaB = NULL;
+	float* freqFormulaW = NULL;
+	float* freqFormulaX = NULL;
+	float* freqFormulaY = NULL;
+	float* freqFormulaZ = NULL;
+
 	FrankBussFormulaModule() : Module(NUM_PARAMS, NUM_INPUTS, NUM_OUTPUTS, NUM_LIGHTS) {
 	}
 
@@ -88,6 +104,24 @@ struct FrankBussFormulaModule : Module {
 		float val = 0;
 		if (compiled) {
 			try {
+				// get inputs
+				float w = inputs[W_INPUT].value;
+				float x = inputs[X_INPUT].value;
+				float y = inputs[Y_INPUT].value;
+				float z = inputs[Z_INPUT].value;
+				
+				// knob
+				float k = params[KNOB_PARAM].value;
+
+				// set all variables
+				*formulaP = *freqFormulaP = phase;
+				*formulaK = *freqFormulaK = k;
+				*formulaB = *freqFormulaB = radiobutton;
+				*formulaW = *freqFormulaW = w;
+				*formulaX = *freqFormulaX = x;
+				*formulaY = *freqFormulaY = y;
+				*formulaZ = *freqFormulaZ = z;
+
 				if (freqFormulaEnabled) {
 					float freq = evalFormula(freqFormula);
 					phase += freq * engineGetSampleTime();
@@ -126,27 +160,17 @@ struct FrankBussFormulaModule : Module {
 		formula.setExpression(expr);
 		formula.setVariable("pi", M_PI);
 		formula.setVariable("e", M_E);
+		
+		formula.setVariable("p", 0);
+		formula.setVariable("k", 0);
+		formula.setVariable("b", 0);
+		formula.setVariable("w", 0);
+		formula.setVariable("x", 0);
+		formula.setVariable("y", 0);
+		formula.setVariable("z", 0);
 	}
 
 	float evalFormula(Formula& formula) {
-		// get inputs
-		float w = inputs[W_INPUT].value;
-		float x = inputs[X_INPUT].value;
-		float y = inputs[Y_INPUT].value;
-		float z = inputs[Z_INPUT].value;
-		
-		// knob
-		float k = params[KNOB_PARAM].value;
-
-		// set all variables
-		formula.setVariable("p", phase);
-		formula.setVariable("k", k);
-		formula.setVariable("b", radiobutton);
-		formula.setVariable("w", w);
-		formula.setVariable("x", x);
-		formula.setVariable("y", y);
-		formula.setVariable("z", z);
-		
 		// eval
 		float val = formula.eval();
 		if (!isfinite(val) || isnan(val)) val = 0.0f;
@@ -165,7 +189,23 @@ struct FrankBussFormulaModule : Module {
 					parseFormula(freqFormula, freqField->text);
 					freqFormulaEnabled = true;
 				}
+				
+				formulaP = formula.getVariableAddress("p");
+				formulaK = formula.getVariableAddress("k");
+				formulaB = formula.getVariableAddress("b");
+				formulaW = formula.getVariableAddress("w");
+				formulaX = formula.getVariableAddress("x");
+				formulaY = formula.getVariableAddress("y");
+				formulaZ = formula.getVariableAddress("z");
 
+				freqFormulaP = freqFormula.getVariableAddress("p");
+				freqFormulaK = freqFormula.getVariableAddress("k");
+				freqFormulaB = freqFormula.getVariableAddress("b");
+				freqFormulaW = freqFormula.getVariableAddress("w");
+				freqFormulaX = freqFormula.getVariableAddress("x");
+				freqFormulaY = freqFormula.getVariableAddress("y");
+				freqFormulaZ = freqFormula.getVariableAddress("z");
+				
 				compiled = true;
 			} catch (exception& e) {
 				printf("formula exception: %s\n", e.what());

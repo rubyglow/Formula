@@ -33,6 +33,9 @@ float ParserTime()
 
 Parser::Parser(string expression)
 {
+	// remove old variables
+	m_evaluator = Evaluator();
+	
 	m_evaluator.setFunction("acos", acosf);
 	m_evaluator.setFunction("asin", asinf);
 	m_evaluator.setFunction("atan", atanf);

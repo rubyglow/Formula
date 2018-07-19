@@ -25,8 +25,7 @@ public:
 	~Formula();
 	void setExpression(string expression) throw(SyntaxError, TooManyArgumentsError);
 	void setVariable(string name, float value);
-	void removeVariable(string name);
-	void removeAllVariables();
+	float* getVariableAddress(string name);
 	void setFunction(string name, float(*function)());
 	void setFunction(string name, float(*function)(float));
 	void setFunction(string name, float(*function)(float, float));
