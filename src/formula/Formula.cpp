@@ -26,7 +26,7 @@ Formula::~Formula()
 	delete m_parser;
 }
 
-void Formula::setExpression(string expression) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound)
+void Formula::setExpression(string expression)
 {
 	m_parser->setExpression(expression);
 }
@@ -65,7 +65,7 @@ void Formula::setFunction(string name, float(*function)(float, float))
 
 
 
-float Formula::eval() throw(FunctionNotFound, VariableNotFound, StackUnderflow, MathError)
+float Formula::eval()
 {
 	return m_parser->eval();
 }

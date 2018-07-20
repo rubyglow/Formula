@@ -22,12 +22,16 @@
 
 using namespace std;
 
+typedef float(*NoArgumentFunction)();
+typedef float(*OneArgumentFunction)(float);
+typedef float(*TwoArgumentsFunction)(float, float);
+
 class NumberStack : public vector<float>
 {
 public:
 	NumberStack() : m_size(0) {}
-	float top() throw(StackUnderflow);
-	float pop() throw(StackUnderflow);
+	float top();
+	float pop();
 	void push(float value);
 	size_t size() { return m_size; }
 private:
@@ -52,7 +56,7 @@ public:
 	NumberAction(float value) : m_value(value) {}
 	NumberAction(string value);
 
-	void run(NumberStack& numberStack)  throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 
 private:
 	float m_value;
@@ -62,93 +66,93 @@ private:
 class MulAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 
 class DivAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 
 class AddAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class LessAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class GreaterAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class LessEqualAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class GreaterEqualAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class EqualAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class NotEqualAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class AndAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class OrAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class NotAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class SubAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class NegAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class PowerAction : public Action
 {
 public:
-	void run(NumberStack& numberStack) throw(StackUnderflow, MathError) override;
+	void run(NumberStack& numberStack) override;
 };
 
 class Evaluator
@@ -156,11 +160,11 @@ class Evaluator
 public:
 	~Evaluator();
 	void addAction(Action* action);
-	float eval() throw(FunctionNotFound, VariableNotFound, StackUnderflow, MathError);
+	float eval();
 	void removeAllActions();
 	void setVariable(string name, float value);
-	float getVariable(string name) throw(VariableNotFound);
-	float* getVariableAddress(string name) throw(VariableNotFound);
+	float getVariable(string name);
+	float* getVariableAddress(string name);
 
 private:
 	NumberStack m_numberStack;
@@ -176,7 +180,7 @@ class VariableAction : public Action
 {
 public:
 	VariableAction(Evaluator* evaluator, string name) : m_evaluator(evaluator), m_name(name), m_variableAddress(NULL) {}
-	void run(NumberStack& numberStack) throw(VariableNotFound, MathError) override;
+	void run(NumberStack& numberStack) override;
 
 private:
 	Evaluator* m_evaluator;
@@ -188,34 +192,34 @@ private:
 class NoArgumentFunctionAction : public Action
 {
 public:
-	NoArgumentFunctionAction(Evaluator* evaluator, float(*function)()) : m_evaluator(evaluator), m_function(function) {}
-	void run(NumberStack& numberStack) throw(FunctionNotFound, MathError) override;
+	NoArgumentFunctionAction(Evaluator* evaluator, NoArgumentFunction function) : m_evaluator(evaluator), m_function(function) {}
+	void run(NumberStack& numberStack) override;
 
 private:
 	Evaluator* m_evaluator;
-	float(*m_function)();
+	NoArgumentFunction m_function;
 };
 
 class OneArgumentFunctionAction : public Action
 {
 public:
-	OneArgumentFunctionAction(Evaluator* evaluator, float(*function)(float)) : m_evaluator(evaluator), m_function(function) {}
-	void run(NumberStack& numberStack) throw(FunctionNotFound, StackUnderflow, MathError) override;
+	OneArgumentFunctionAction(Evaluator* evaluator, OneArgumentFunction function) : m_evaluator(evaluator), m_function(function) {}
+	void run(NumberStack& numberStack) override;
 
 private:
 	Evaluator* m_evaluator;
-	float(*m_function)(float);
+	OneArgumentFunction m_function;
 };
 
 class TwoArgumentsFunctionAction : public Action
 {
 public:
-	TwoArgumentsFunctionAction(Evaluator* evaluator, float(*function)(float, float)) : m_evaluator(evaluator), m_function(function) {}
-	void run(NumberStack& numberStack) throw(FunctionNotFound, StackUnderflow, MathError) override;
+	TwoArgumentsFunctionAction(Evaluator* evaluator, TwoArgumentsFunction function) : m_evaluator(evaluator), m_function(function) {}
+	void run(NumberStack& numberStack) override;
 
 private:
 	Evaluator* m_evaluator;
-	float(*m_function)(float, float);
+	TwoArgumentsFunction m_function;
 };
 
 

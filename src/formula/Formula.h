@@ -23,13 +23,13 @@ public:
 	Formula();
 	Formula(string formula);
 	~Formula();
-	void setExpression(string expression) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound);
+	void setExpression(string expression);
 	void setVariable(string name, float value);
 	float* getVariableAddress(string name);
 	void setFunction(string name, float(*function)());
 	void setFunction(string name, float(*function)(float));
 	void setFunction(string name, float(*function)(float, float));
-	float eval() throw(FunctionNotFound, VariableNotFound, StackUnderflow, MathError);
+	float eval();
 
 private:
 	Parser* m_parser;

@@ -34,31 +34,31 @@ class Parser
 public:
 	Parser(string expression);
 	~Parser();
-	void setExpression(string expression) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound);
+	void setExpression(string expression);
 	void setVariable(string name, float value) {
 		m_evaluator.setVariable(name, value);
 	}
 	float* getVariableAddress(string name) {
 		return m_evaluator.getVariableAddress(name);
 	}
-	void setFunction(string name, float(*function)());
-	void setFunction(string name, float(*function)(float));
-	void setFunction(string name, float(*function)(float, float));
-	float(*getNoArgumentFunction(string name))() throw(FunctionNotFound);
-	float(*getOneArgumentFunction(string name))(float) throw(FunctionNotFound);
-	float(*getTwoArgumentsFunction(string name))(float, float) throw(FunctionNotFound);
+	void setFunction(string name, NoArgumentFunction function);
+	void setFunction(string name, OneArgumentFunction function);
+	void setFunction(string name, TwoArgumentsFunction function);
+	NoArgumentFunction getNoArgumentFunction(string name);
+	OneArgumentFunction getOneArgumentFunction(string name);
+	TwoArgumentsFunction getTwoArgumentsFunction(string name);
 	
 	string getPostfix() {
 		return m_postfix;
 	}
-	float eval() throw(FunctionNotFound, VariableNotFound, StackUnderflow, MathError) {
+	float eval() {
 		return m_evaluator.eval();
 	}
 
 
 private:
 	void deleteTokens();
-	string parseNumber(char c) throw(SyntaxError);
+	string parseNumber(char c);
 	string parseIdentifier(char c);
 	char peekChar();
 	void skipChar();
@@ -76,9 +76,9 @@ private:
 	stack<Token*> m_operators;
 	vector<Token*> m_tokens;
 	stack<int> m_functionArgumentCountStack;
-	map<string, float(*)()> m_noArgumentFunctions;
-	map<string, float(*)(float)> m_oneArgumentFunctions;
-	map<string, float(*)(float, float)> m_twoArgumentsFunctions;
+	map<string, NoArgumentFunction> m_noArgumentFunctions;
+	map<string, OneArgumentFunction> m_oneArgumentFunctions;
+	map<string, TwoArgumentsFunction> m_twoArgumentsFunctions;
 };
 
 

@@ -115,7 +115,7 @@ void Parser::skipToken()
 }
 
 
-string Parser::parseNumber(char c) throw(SyntaxError)
+string Parser::parseNumber(char c)
 {
 	string number;
 	if (c != '.')
@@ -182,7 +182,7 @@ void Parser::deleteTokens()
 }
 
 
-void Parser::setExpression(string expression) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound)
+void Parser::setExpression(string expression)
 {
 	m_expression = string("(") + expression + ")";
 
@@ -306,9 +306,9 @@ void Parser::setFunction(string name, float(*function)(float, float))
 	m_twoArgumentsFunctions[name] = function;
 }
 
-float(*Parser::getNoArgumentFunction(string name))() throw(FunctionNotFound)
+NoArgumentFunction Parser::getNoArgumentFunction(string name)
 {
-	float(*function)() = m_noArgumentFunctions[name];
+	NoArgumentFunction function = m_noArgumentFunctions[name];
 	if (function) {
 		return function;
 	} else {
@@ -316,9 +316,9 @@ float(*Parser::getNoArgumentFunction(string name))() throw(FunctionNotFound)
 	}
 }
 
-float(*Parser::getOneArgumentFunction(string name))(float) throw(FunctionNotFound)
+OneArgumentFunction Parser::getOneArgumentFunction(string name)
 {
-	float(*function)(float) = m_oneArgumentFunctions[name];
+	OneArgumentFunction function = m_oneArgumentFunctions[name];
 	if (function) {
 		return function;
 	} else {
@@ -326,9 +326,9 @@ float(*Parser::getOneArgumentFunction(string name))(float) throw(FunctionNotFoun
 	}
 }
 
-float(*Parser::getTwoArgumentsFunction(string name))(float, float) throw(FunctionNotFound)
+TwoArgumentsFunction Parser::getTwoArgumentsFunction(string name)
 {
-	float(*function)(float, float) = m_twoArgumentsFunctions[name];
+	TwoArgumentsFunction function = m_twoArgumentsFunctions[name];
 	if (function) {
 		return function;
 	} else {

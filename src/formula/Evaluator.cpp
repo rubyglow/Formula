@@ -12,13 +12,13 @@
 
 using namespace std;
 
-float NumberStack::top() throw(StackUnderflow)
+float NumberStack::top()
 {
 	if (size() == 0) throw StackUnderflow();
 	return m_values[m_size - 1];
 }
 
-float NumberStack::pop() throw(StackUnderflow)
+float NumberStack::pop()
 {
 	if (size() == 0) throw StackUnderflow();
 	return m_values[--m_size];
@@ -46,7 +46,7 @@ NumberAction::NumberAction(string value)
 	m_value = atof(value.c_str());
 }
 
-void NumberAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void NumberAction::run(NumberStack& numberStack)
 {
 	numberStack.push(m_value);
 	checkTopStackElement(numberStack);
@@ -54,7 +54,7 @@ void NumberAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError
 
 
 
-void MulAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void MulAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -63,7 +63,7 @@ void MulAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 }
 
 
-void DivAction::run(NumberStack& numberStack)  throw(StackUnderflow, MathError)
+void DivAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -75,7 +75,7 @@ void DivAction::run(NumberStack& numberStack)  throw(StackUnderflow, MathError)
 }
 
 
-void AddAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void AddAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -83,7 +83,7 @@ void AddAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 	checkTopStackElement(numberStack);
 }
 
-void LessAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void LessAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -91,7 +91,7 @@ void LessAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 	checkTopStackElement(numberStack);
 }
 
-void GreaterAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void GreaterAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -99,7 +99,7 @@ void GreaterAction::run(NumberStack& numberStack) throw(StackUnderflow, MathErro
 	checkTopStackElement(numberStack);
 }
 
-void LessEqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void LessEqualAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -107,7 +107,7 @@ void LessEqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathEr
 	checkTopStackElement(numberStack);
 }
 
-void GreaterEqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void GreaterEqualAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -115,7 +115,7 @@ void GreaterEqualAction::run(NumberStack& numberStack) throw(StackUnderflow, Mat
 	checkTopStackElement(numberStack);
 }
 
-void EqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void EqualAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -123,7 +123,7 @@ void EqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 	checkTopStackElement(numberStack);
 }
 
-void NotEqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void NotEqualAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -131,7 +131,7 @@ void NotEqualAction::run(NumberStack& numberStack) throw(StackUnderflow, MathErr
 	checkTopStackElement(numberStack);
 }
 
-void AndAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void AndAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -139,7 +139,7 @@ void AndAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 	checkTopStackElement(numberStack);
 }
 
-void OrAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void OrAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -147,13 +147,13 @@ void OrAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 	checkTopStackElement(numberStack);
 }
 
-void NotAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void NotAction::run(NumberStack& numberStack)
 {
 	numberStack.push(!numberStack.pop());
 	checkTopStackElement(numberStack);
 }
 
-void SubAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void SubAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -161,13 +161,13 @@ void SubAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
 	checkTopStackElement(numberStack);
 }
 
-void NegAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void NegAction::run(NumberStack& numberStack)
 {
 	numberStack.push(-numberStack.pop());
 	checkTopStackElement(numberStack);
 }
 
-void PowerAction::run(NumberStack& numberStack) throw(StackUnderflow, MathError)
+void PowerAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();
@@ -188,7 +188,7 @@ void Evaluator::addAction(Action* action)
 	m_actions.push_back(action);
 }
 
-float Evaluator::eval() throw(FunctionNotFound, VariableNotFound, StackUnderflow, MathError)
+float Evaluator::eval()
 {
 	if (m_actions.size() == 0) return 0;
 	m_numberStack.clear();
@@ -211,12 +211,12 @@ void Evaluator::setVariable(string name, float value)
 	*getVariableAddress(name) = value;
 }
 
-float Evaluator::getVariable(string name) throw(VariableNotFound)
+float Evaluator::getVariable(string name)
 {
 	return *getVariableAddress(name);
 }
 
-float* Evaluator::getVariableAddress(string name) throw(VariableNotFound)
+float* Evaluator::getVariableAddress(string name)
 {
 	auto i = m_variables.find(name);
 	if (i != m_variables.end()) {
@@ -232,7 +232,7 @@ void Evaluator::deleteActions()
 }
 
 
-void VariableAction::run(NumberStack& numberStack) throw(VariableNotFound, MathError)
+void VariableAction::run(NumberStack& numberStack)
 {
 	if (!m_variableAddress) m_variableAddress = m_evaluator->getVariableAddress(m_name);
 	numberStack.push(*m_variableAddress);
@@ -240,19 +240,19 @@ void VariableAction::run(NumberStack& numberStack) throw(VariableNotFound, MathE
 }
 
 
-void NoArgumentFunctionAction::run(NumberStack& numberStack) throw(FunctionNotFound, MathError)
+void NoArgumentFunctionAction::run(NumberStack& numberStack)
 {
 	numberStack.push(m_function());
 	checkTopStackElement(numberStack);
 }
 
-void OneArgumentFunctionAction::run(NumberStack& numberStack) throw(FunctionNotFound, StackUnderflow, MathError)
+void OneArgumentFunctionAction::run(NumberStack& numberStack)
 {
 	numberStack.push(m_function(numberStack.pop()));
 	checkTopStackElement(numberStack);
 }
 
-void TwoArgumentsFunctionAction::run(NumberStack& numberStack) throw(FunctionNotFound, StackUnderflow, MathError)
+void TwoArgumentsFunctionAction::run(NumberStack& numberStack)
 {
 	float op2 = numberStack.pop();
 	float op1 = numberStack.pop();

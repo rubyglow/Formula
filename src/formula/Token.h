@@ -44,7 +44,7 @@ class OperatorToken : public Token
 {
 public:
 	OperatorToken(string value) : Token(value) {}
-	virtual void eval(Parser& parser) throw(SyntaxError) override;
+	virtual void eval(Parser& parser) override;
 	virtual Action* getAction() {
 		return NULL;
 	}
@@ -54,7 +54,7 @@ class AddToken : public OperatorToken
 {
 public:
 	AddToken() : OperatorToken("+") {}
-	virtual void eval(Parser& parser) throw(SyntaxError) override;
+	virtual void eval(Parser& parser) override;
 	virtual Action* getAction() override {
 		return new AddAction();
 	}
@@ -67,7 +67,7 @@ class SubToken : public OperatorToken
 {
 public:
 	SubToken() : OperatorToken("-") {}
-	virtual void eval(Parser& parser) throw(SyntaxError) override;
+	virtual void eval(Parser& parser) override;
 	virtual Action* getAction() override {
 		return m_action;
 	}
@@ -237,28 +237,28 @@ class NumberToken : public Token
 {
 public:
 	NumberToken(string value) : Token(value) {}
-	void eval(Parser& parser) throw(SyntaxError) override;
+	void eval(Parser& parser) override;
 };
 
 class CommaToken : public Token
 {
 public:
 	CommaToken() : Token(",") {}
-	virtual void eval(Parser& parser) throw(SyntaxError) override;
+	virtual void eval(Parser& parser) override;
 };
 
 class OpenBracketToken : public Token
 {
 public:
 	OpenBracketToken() : Token("(") {}
-	void eval(Parser& parser) throw(SyntaxError) override;
+	void eval(Parser& parser) override;
 };
 
 class IdentifierToken : public Token
 {
 public:
 	IdentifierToken(string value) : Token(value) {}
-	void eval(Parser& parser) throw(SyntaxError, FunctionNotFound) override;
+	void eval(Parser& parser) override;
 };
 
 
@@ -266,5 +266,5 @@ class CloseBracketToken : public Token
 {
 public:
 	CloseBracketToken() : Token(")") {}
-	void eval(Parser& parser) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound) override;
+	void eval(Parser& parser) override;
 };

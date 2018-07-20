@@ -12,7 +12,7 @@
 #include <iostream>
 
 
-void OperatorToken::eval(Parser& parser) throw(SyntaxError)
+void OperatorToken::eval(Parser& parser)
 {
 	// precondition
 	Token* nextToken = parser.peekNextToken();
@@ -38,7 +38,7 @@ void OperatorToken::eval(Parser& parser) throw(SyntaxError)
 }
 
 
-void NumberToken::eval(Parser& parser) throw(SyntaxError)
+void NumberToken::eval(Parser& parser)
 {
 	// precondition
 	Token* nextToken = parser.peekNextToken();
@@ -54,7 +54,7 @@ void NumberToken::eval(Parser& parser) throw(SyntaxError)
 	parser.skipToken();
 }
 
-void CommaToken::eval(Parser& parser) throw(SyntaxError)
+void CommaToken::eval(Parser& parser)
 {
 	// precondition
 	Token* nextToken = parser.peekNextToken();
@@ -83,7 +83,7 @@ void CommaToken::eval(Parser& parser) throw(SyntaxError)
 	parser.skipToken();
 }
 
-void OpenBracketToken::eval(Parser& parser) throw(SyntaxError)
+void OpenBracketToken::eval(Parser& parser)
 {
 	// precondition
 	Token* nextToken = parser.peekNextToken();
@@ -102,7 +102,7 @@ void OpenBracketToken::eval(Parser& parser) throw(SyntaxError)
 	parser.skipToken();
 }
 
-void IdentifierToken::eval(Parser& parser) throw(SyntaxError, FunctionNotFound)
+void IdentifierToken::eval(Parser& parser)
 {
 	// precondition
 	Token* nextToken = parser.peekNextToken();
@@ -138,7 +138,7 @@ void IdentifierToken::eval(Parser& parser) throw(SyntaxError, FunctionNotFound)
 }
 
 
-void CloseBracketToken::eval(Parser& parser) throw(SyntaxError, TooManyArgumentsError, FunctionNotFound)
+void CloseBracketToken::eval(Parser& parser)
 {
 	// precondition
 	Token* nextToken = parser.peekNextToken();
@@ -187,7 +187,7 @@ void CloseBracketToken::eval(Parser& parser) throw(SyntaxError, TooManyArguments
 }
 
 
-void SubToken::eval(Parser& parser) throw(SyntaxError)
+void SubToken::eval(Parser& parser)
 {
 	// precondition is in OperatorToken::eval(parser)
 
@@ -208,7 +208,7 @@ void SubToken::eval(Parser& parser) throw(SyntaxError)
 }
 
 
-void AddToken::eval(Parser& parser) throw(SyntaxError)
+void AddToken::eval(Parser& parser)
 {
 	// precondition is in OperatorToken::eval(parser)
 
